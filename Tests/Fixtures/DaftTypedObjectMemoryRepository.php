@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace SignpostMarv\DaftTypedObject\Fixtures;
 
 use RuntimeException;
+use SignpostMarv\DaftRelaxedObjectRepository\ConvertingRepository;
 use SignpostMarv\DaftTypedObject\AbstractDaftTypedObjectRepository;
 use SignpostMarv\DaftTypedObject\AppendableTypedObjectRepository;
 use SignpostMarv\DaftTypedObject\DaftTypedObjectForRepository;
@@ -17,18 +18,25 @@ use Throwable;
  * @template T1 as MutableForRepository
  * @template T2 as array{id:int}
  * @template S1 as array{name:string}
+ * @template S2 as array{id:int, name:string}
  *
  * @template-extends AbstractDaftTypedObjectRepository<T1, T2>
  *
  * @template-implements AppendableTypedObjectRepository<T1, T2, S1>
+ * @template-implements ConvertingRepository<T1, S2, T2>
  * @template-implements PatchableObjectRepository<T1, T2, S1>
  */
 class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository implements
 		AppendableTypedObjectRepository,
+		ConvertingRepository,
 		PatchableObjectRepository
 {
+	const MIN_BASE_ID = 0;
+
+	const INCREMENT_NEW_ID_BY = 1;
+
 	/**
-	 * @var array<string, array{id:int, name:string}>
+	 * @var array<string, S2>
 	 */
 	protected array $data = [];
 
@@ -56,23 +64,19 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 	public function AppendTypedObjectFromArray(
 		array $data
 	) : DaftTypedObjectForRepository {
-		$new_id = max(0, count($this->data)) + 1;
+		$new_id = max(self::MIN_BASE_ID, count($this->data)) + self::INCREMENT_NEW_ID_BY;
 
+		/** @var S2 */
 		$data = [
 			'id' => $new_id,
 			'name' => $data['name'],
 		];
 
-		$hash = static::DaftTypedObjectHash(['id' => $new_id]);
+		$hash = static::RelaxedObjectHash(['id' => $new_id]);
 
 		$this->data[$hash] = $data;
 
-		$type = $this->type;
-
-		/**
-		 * @var T1
-		 */
-		$object = new $type($data);
+		$object = $this->ConvertSimpleArrayToObject($data);
 
 		$this->memory[$hash] = $object;
 
@@ -90,19 +94,19 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 		 */
 		$id = $object->ObtainId();
 
-		$hash = static::DaftTypedObjectHash($id);
+		$hash = static::RelaxedObjectHash($id);
 
 		parent::UpdateTypedObject($object);
 
-		$this->data[$hash] = $object->__toArray();
+		$this->data[$hash] = $this->ConvertObjectToSimpleArray($object);
 	}
 
 	/**
 	 * @param T2 $id
 	 */
-	public function RemoveTypedObject(array $id) : void
+	public function RemoveObject(array $id) : void
 	{
-		$hash = static::DaftTypedObjectHash($id);
+		$hash = static::RelaxedObjectHash($id);
 
 		$this->ForgetTypedObject($id);
 		unset($this->data[$hash]);
@@ -111,23 +115,18 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 	/**
 	 * @return T1|null
 	 */
-	public function MaybeRecallTypedObject(
+	public function MaybeRecallObject(
 		array $id
-	) : ? DaftTypedObjectForRepository {
-		$maybe = parent::MaybeRecallTypedObject($id);
+	) : ? object {
+		$maybe = parent::MaybeRecallObject($id);
 
 		if (is_null($maybe)) {
-			$hash = static::DaftTypedObjectHash($id);
+			$hash = static::RelaxedObjectHash($id);
 
 			$row = $this->data[$hash] ?? null;
 
-			$type = $this->type;
-
-			if (is_array($row)) {
-				/**
-				 * @var T1
-				 */
-				$object = $type::__fromArray($row);
+			if (null !== $row) {
+				$object = $this->ConvertSimpleArrayToObject($row);
 
 				$this->UpdateTypedObject($object);
 
@@ -146,8 +145,6 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 	 */
 	public function PatchTypedObjectData(array $id, array $data) : void
 	{
-		$type = $this->type;
-
 		/**
 		 * @var array<string, scalar|null>
 		 */
@@ -158,13 +155,31 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 		 */
 		$data = $data;
 
+		/** @var S2 */
 		$from_array_args = $id + $data;
 
-		/**
-		 * @var T1
-		 */
-		$object = $type::__fromArray($from_array_args);
+		$object = $this->ConvertSimpleArrayToObject($from_array_args);
 
 		$this->UpdateTypedObject($object);
+	}
+
+	/**
+	 * @param S2 $array
+	 */
+	public function ConvertSimpleArrayToObject(array $array) : object
+	{
+		/** @var T1 */
+		return MutableForRepository::__fromArray($array);
+	}
+
+	/**
+	 * @param T1 $object
+	 *
+	 * @return S2
+	 */
+	public function ConvertObjectToSimpleArray(object $object) : array
+	{
+		/** @var S2 */
+		return $object->__toArray();
 	}
 }

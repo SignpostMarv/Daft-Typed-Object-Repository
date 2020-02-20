@@ -10,12 +10,13 @@ use Exception;
 use PHPUnit\Framework\TestCase as Base;
 use function random_bytes;
 use RuntimeException;
+use SignpostMarv\DaftRelaxedObjectRepository\ConvertingRepository;
 
 /**
- * @template S as array<string, scalar|null>
- * @template S2 as array<string, scalar|null>
+ * @template S as array{id:int, name:string}
+ * @template S2 as array{id:int|string, name:string}
  * @template T as array<string, scalar|array|object|null>
- * @template T1 as DaftTypedObjectForRepository
+ * @template T1 as Fixtures\MutableForRepository
  */
 class DaftTypedObjectRepositoryTest extends Base
 {
@@ -24,8 +25,8 @@ class DaftTypedObjectRepositoryTest extends Base
 	 *	array{
 	 *		0:class-string<AppendableTypedObjectRepository>,
 	 *		1:array{type:class-string<T1>},
-	 *		2:list<array<string, scalar|null>>,
-	 *		3:list<array<string, scalar|null>>
+	 *		2:list<S>,
+	 *		3:list<S2>
 	 *	}
 	 * >
 	 */
@@ -36,8 +37,8 @@ class DaftTypedObjectRepositoryTest extends Base
 		 *	array{
 		 *		0:class-string<AppendableTypedObjectRepository>,
 		 *		1:array{type:class-string<T1>},
-		 *		2:list<array<string, scalar|null>>,
-		 *		3:list<array<string, scalar|null>>
+		 *		2:list<S>,
+		 *		3:list<S2>
 		 *	}
 		 * >
 		 */
@@ -265,7 +266,7 @@ class DaftTypedObjectRepositoryTest extends Base
 	/**
 	 * @return list<
 	 *	array{
-	 *		0:class-string<AppendableTypedObjectRepository&PatchableObjectRepository>,
+	 *		0:class-string<AppendableTypedObjectRepository&PatchableObjectRepository&ConvertingRepository>,
 	 *		1:array{type:class-string<T1>},
 	 *		2:array<string, scalar|null>,
 	 *		3:array<string, scalar|null>,
@@ -278,7 +279,7 @@ class DaftTypedObjectRepositoryTest extends Base
 		/**
 		 * @var list<
 		 *	array{
-		 *		0:class-string<AppendableTypedObjectRepository&PatchableObjectRepository>,
+		 *		0:class-string<AppendableTypedObjectRepository&PatchableObjectRepository&ConvertingRepository>,
 		 *		1:array{type:class-string<T1>},
 		 *		2:array<string, scalar|null>,
 		 *		3:array<string, scalar|null>,
@@ -314,7 +315,7 @@ class DaftTypedObjectRepositoryTest extends Base
 	 *
 	 * @depends test_append_typed_object
 	 *
-	 * @param class-string<AppendableTypedObjectRepository&PatchableObjectRepository> $repo_type
+	 * @param class-string<AppendableTypedObjectRepository&PatchableObjectRepository&ConvertingRepository> $repo_type
 	 * @param array{type:class-string<T1>} $repo_args
 	 * @param array<string, scalar|null> $append_this
 	 * @param array<string, scalar|null> $patch_this
@@ -335,13 +336,30 @@ class DaftTypedObjectRepositoryTest extends Base
 
 		$object = $object_type::__fromArray($append_this);
 
+		/** @var Fixtures\MutableForRepository */
 		$fresh = $repo->AppendTypedObject($object);
 
-		$repo->PatchTypedObjectData($fresh->ObtainId(), $patch_this);
+		/** @var array{id:int} */
+		$id = $repo->ObtainIdFromObject($fresh);
+
+		$repo->PatchTypedObjectData($id, $patch_this);
 
 		static::assertSame(
 			$expect_this,
-			$repo->RecallTypedObject($fresh->ObtainId())->__toArray()
+			$repo->RecallTypedObject($repo->ObtainIdFromObject($fresh))->__toArray()
 		);
+
+		$fresh->name = strrev($fresh->name);
+
+		$repo->UpdateTypedObject($fresh);
+
+		$repo->ForgetTypedObject($repo->ObtainIdFromObject($fresh));
+
+		/** @var Fixtures\MutableForRepository */
+		$fresh2 = $repo->RecallTypedObject($repo->ObtainIdFromObject($fresh));
+
+		static::assertNotSame($fresh, $fresh2);
+
+		static::assertSame(strrev($object->name), $fresh2->name);
 	}
 }

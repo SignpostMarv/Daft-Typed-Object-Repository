@@ -6,35 +6,22 @@ declare(strict_types=1);
 
 namespace SignpostMarv\DaftTypedObject;
 
-use RuntimeException;
+use SignpostMarv\DaftRelaxedObjectRepository\AbstractObjectRepository;
 use Throwable;
 
 /**
  * @template T1 as DaftTypedObjectForRepository
  * @template T2 as array<string, scalar>
  *
+ * @template-extends AbstractObjectRepository<T1, T2>
+ *
  * @template-implements DaftTypedObjectRepository<T1, T2>
  */
-abstract class AbstractDaftTypedObjectRepository implements DaftTypedObjectRepository
+abstract class AbstractDaftTypedObjectRepository extends AbstractObjectRepository implements DaftTypedObjectRepository
 {
-	/**
-	 * @readonly
-	 *
-	 * @var class-string<T1>
-	 */
-	public string $type;
-
-	/**
-	 * @var array<string, T1>
-	 */
-	protected array $memory = [];
-
-	/**
-	 * @param array{type:class-string<T1>} $options
-	 */
 	public function __construct(array $options)
 	{
-		$this->type = $options['type'];
+		parent::__construct($options);
 	}
 
 	/**
@@ -43,9 +30,7 @@ abstract class AbstractDaftTypedObjectRepository implements DaftTypedObjectRepos
 	public function UpdateTypedObject(
 		DaftTypedObjectForRepository $object
 	) : void {
-		$hash = static::DaftTypedObjectHash($object->ObtainId());
-
-		$this->memory[$hash] = $object;
+		$this->UpdateObject($object);
 	}
 
 	/**
@@ -53,9 +38,7 @@ abstract class AbstractDaftTypedObjectRepository implements DaftTypedObjectRepos
 	 */
 	public function ForgetTypedObject(array $id) : void
 	{
-		$hash = static::DaftTypedObjectHash($id);
-
-		unset($this->memory[$hash]);
+		$this->ForgetObject($id);
 	}
 
 	/**
@@ -66,12 +49,7 @@ abstract class AbstractDaftTypedObjectRepository implements DaftTypedObjectRepos
 	public function MaybeRecallTypedObject(
 		array $id
 	) : ? DaftTypedObjectForRepository {
-		$hash = static::DaftTypedObjectHash($id);
-
-		/**
-		 * @var T1|null
-		 */
-		return $this->memory[$hash] ?? null;
+		return $this->MaybeRecallObject($id);
 	}
 
 	/**
@@ -81,23 +59,25 @@ abstract class AbstractDaftTypedObjectRepository implements DaftTypedObjectRepos
 		array $id,
 		Throwable $not_found = null
 	) : DaftTypedObjectForRepository {
-		$maybe = $this->MaybeRecallTypedObject($id);
-
-		if (is_null($maybe)) {
-			throw $not_found ?: new RuntimeException(
-				'Object could not be found for the specified id!'
-			);
-		}
-
-		return $maybe;
+		return $this->RecallObject($id, $not_found);
 	}
 
 	/**
-	 * @param array<string, scalar> $id
+	 * @param T2 $id
 	 */
-	protected static function DaftTypedObjectHash(
+	public function RemoveTypedObject(
 		array $id
-	) : string {
-		return hash('sha512', json_encode($id), true);
+	) : void {
+		$this->RemoveObject($id);
+	}
+
+	/**
+	 * @param T1 $object
+	 *
+	 * @return T2
+	 */
+	public function ObtainIdFromObject(object $object) : array
+	{
+		return $object->ObtainId();
 	}
 }

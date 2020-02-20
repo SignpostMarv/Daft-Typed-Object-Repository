@@ -4,8 +4,66 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "50df49b87012dff231afeb470f67c292",
+    "content-hash": "4a99d3f6913b9cf5b77b19c8a04ef71a",
     "packages": [
+        {
+            "name": "daft-framework/daft-relaxed-object-repository",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/daft-framework/daft-relaxed-object-repository.git",
+                "reference": "008ad0770a855df41e7aba520d172e83eb421c39"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/daft-framework/daft-relaxed-object-repository/zipball/008ad0770a855df41e7aba520d172e83eb421c39",
+                "reference": "008ad0770a855df41e7aba520d172e83eb421c39",
+                "shasum": ""
+            },
+            "require": {
+                "ext-hash": "*",
+                "ext-json": "*",
+                "php": "^7.4"
+            },
+            "conflict": {
+                "vimeo/psalm": "<3.8.5"
+            },
+            "require-dev": {
+                "ext-ctype": "*",
+                "ext-xdebug": "*",
+                "infection/infection": "^0.15.1",
+                "maglnet/composer-require-checker": "^2.0",
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^8.5",
+                "povils/phpmnd": "^2.2",
+                "psalm/plugin-phpunit": "^0.9.0",
+                "roave/security-advisories": "dev-master",
+                "sebastian/phpcpd": "^4.1",
+                "signpostmarv/php-cs-fixer-config": "^0.17.0",
+                "vimeo/psalm": "^3.8"
+            },
+            "suggest": {
+                "vimeo/psalm": "for static analysis & templated typehinting"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SignpostMarv\\DaftRelaxedObjectRepository\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "SignpostMarv",
+                    "email": "me@signpostmarv.name"
+                }
+            ],
+            "description": "Relaxed Object Repository: Simplified version of signpostmarv/daft-typed-object-repository for objects other than signpostmarv/daft-typed-object implementations",
+            "time": "2020-02-19T21:26:55+00:00"
+        },
         {
             "name": "signpostmarv/daft-typed-object",
             "version": "v0.5.2",
@@ -5047,6 +5105,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "daft-framework/daft-relaxed-object-repository": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

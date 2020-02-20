@@ -15,6 +15,9 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
+			"SignpostMarv\\DaftRelaxedObjectRepository\\": [
+				"./vendor/daft-framework/daft-relaxed-object-repository/Tests/"
+			],
 			"SignpostMarv\\DaftTypedObject\\": [
 				"./Tests/",
 				"./vendor/signpostmarv/daft-typed-object/Tests/"
@@ -41,7 +44,7 @@
 	},
 	"extra": {
 		"branch-alias": {
-			"dev-master": "0.5.x-dev"
+			"dev-master": "0.6.x-dev"
 		}
 	},
 	"conflict": {
@@ -54,11 +57,12 @@
 		"php": "^7.4",
 		"ext-hash": "*",
 		"ext-json": "*",
+		"daft-framework/daft-relaxed-object-repository": "dev-master",
 		"signpostmarv/daft-typed-object": "^0.5.2"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
-		"infection/infection": "^0.15.1",
+		"infection/infection": "^0.15.3",
 		"maglnet/composer-require-checker": "^2.0",
 		"php-coveralls/php-coveralls": "^2.2",
 		"phpunit/phpunit": "^8.5",

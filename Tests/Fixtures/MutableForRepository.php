@@ -19,7 +19,7 @@ class MutableForRepository extends Mutable implements DaftTypedObjectForReposito
 	public function ObtainId() : array
 	{
 		return [
-			'id' => $this->id,
+			'id' => (int) $this->id,
 		];
 	}
 
