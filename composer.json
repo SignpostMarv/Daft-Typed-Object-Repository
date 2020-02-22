@@ -57,7 +57,7 @@
 		"php": "^7.4",
 		"ext-hash": "*",
 		"ext-json": "*",
-		"daft-framework/daft-relaxed-object-repository": "dev-master",
+		"daft-framework/daft-relaxed-object-repository": "^0.1.0",
 		"signpostmarv/daft-typed-object": "^0.5.2"
 	},
 	"require-dev": {

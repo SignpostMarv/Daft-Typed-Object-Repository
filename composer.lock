@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52581be84ce3d3ab48de38975e31e50b",
+    "content-hash": "e324c829910535076bf408b87fea3e0b",
     "packages": [
         {
             "name": "daft-framework/daft-relaxed-object-repository",
-            "version": "dev-master",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/daft-framework/daft-relaxed-object-repository.git",
@@ -5105,7 +5105,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "daft-framework/daft-relaxed-object-repository": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
