@@ -2,7 +2,6 @@
     "timeout": 10,
     "source": {
         "directories": [
-            "Tests/Fixtures",
             "src"
         ]
     },
@@ -11,17 +10,11 @@
     },
     "mutators": {
         "@default": true,
-        "CastInt": {
-            "ignore": [
-                "SignpostMarv\\DaftTypedObject\\Fixtures\\MutableForRepository::ObtainId"
-            ]
-        },
         "MethodCallRemoval": {
             "ignore": [
                 "SignpostMarv\\DaftTypedObject\\AbstractDaftTypedObjectRepository::__construct",
                 "SignpostMarv\\DaftTypedObject\\AbstractDaftTypedObjectRepository::ForgetTypedObject",
-                "SignpostMarv\\DaftTypedObject\\AbstractDaftTypedObjectRepository::UpdateTypedObject",
-                "SignpostMarv\\DaftTypedObject\\Fixtures\\DaftTypedObjectMemoryRepository::UpdateTypedObject"
+                "SignpostMarv\\DaftTypedObject\\AbstractDaftTypedObjectRepository::UpdateTypedObject"
             ]
         }
     }
