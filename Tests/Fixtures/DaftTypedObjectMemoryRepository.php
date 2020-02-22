@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace SignpostMarv\DaftTypedObject\Fixtures;
 
+use DaftFramework\RelaxedObjectRepository\AppendableObjectRepository;
 use DaftFramework\RelaxedObjectRepository\ConvertingRepository;
 use RuntimeException;
 use SignpostMarv\DaftTypedObject\AbstractDaftTypedObjectRepository;
@@ -23,11 +24,13 @@ use Throwable;
  *
  * @template-extends AbstractDaftTypedObjectRepository<T1, T2, T3>
  *
- * @template-implements AppendableTypedObjectRepository<T1, T2, S1, T3>
+ * @template-implements AppendableObjectRepository<T1, T2, S1|S2, T3>
+ * @template-implements AppendableTypedObjectRepository<T1, T2, S1|S2, T3>
  * @template-implements ConvertingRepository<T1, S2, T2, T3>
  * @template-implements PatchableObjectRepository<T1, T2, S1, T3>
  */
 class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository implements
+		AppendableObjectRepository,
 		AppendableTypedObjectRepository,
 		ConvertingRepository,
 		PatchableObjectRepository
@@ -84,6 +87,16 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 		 * @var T1
 		 */
 		return $object;
+	}
+
+	public function AppendObject(object $object) : object
+	{
+		return $this->AppendTypedObject($object);
+	}
+
+	public function AppendObjectFromArray(array $data) : object
+	{
+		return $this->AppendTypedObjectFromArray($data);
 	}
 
 	public function UpdateTypedObject(
