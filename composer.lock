@@ -31,16 +31,16 @@
             "require-dev": {
                 "ext-ctype": "*",
                 "ext-xdebug": "*",
-                "infection/infection": "^0.15.1",
+                "infection/infection": "^0.15.3",
                 "maglnet/composer-require-checker": "^2.0",
                 "php-coveralls/php-coveralls": "^2.2",
                 "phpunit/phpunit": "^8.5",
                 "povils/phpmnd": "^2.2",
                 "psalm/plugin-phpunit": "^0.9.0",
                 "roave/security-advisories": "dev-master",
-                "sebastian/phpcpd": "^4.1",
-                "signpostmarv/php-cs-fixer-config": "^0.17.0",
-                "vimeo/psalm": "^3.8"
+                "sebastian/phpcpd": "^5.0",
+                "signpostmarv/php-cs-fixer-config": "^0.17.1",
+                "vimeo/psalm": "^3.9"
             },
             "suggest": {
                 "vimeo/psalm": "for static analysis & templated typehinting"
@@ -48,7 +48,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "SignpostMarv\\DaftRelaxedObjectRepository\\": "./src/"
+                    "DaftFramework\\RelaxedObjectRepository\\": "./src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -62,7 +62,7 @@
                 }
             ],
             "description": "Relaxed Object Repository: Simplified version of signpostmarv/daft-typed-object-repository for objects other than signpostmarv/daft-typed-object implementations",
-            "time": "2020-02-19T21:26:55+00:00"
+            "time": "2020-02-22T14:46:09+00:00"
         },
         {
             "name": "signpostmarv/daft-typed-object",

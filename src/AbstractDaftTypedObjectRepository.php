@@ -6,19 +6,23 @@ declare(strict_types=1);
 
 namespace SignpostMarv\DaftTypedObject;
 
-use SignpostMarv\DaftRelaxedObjectRepository\AbstractObjectRepository;
+use DaftFramework\RelaxedObjectRepository\AbstractObjectRepository;
 use Throwable;
 
 /**
  * @template T1 as DaftTypedObjectForRepository
  * @template T2 as array<string, scalar>
+ * @template T3 as array{type:class-string<DaftTypedObjectForRepository>}
  *
- * @template-extends AbstractObjectRepository<T1, T2>
+ * @template-extends AbstractObjectRepository<T1, T2, T3>
  *
- * @template-implements DaftTypedObjectRepository<T1, T2>
+ * @template-implements DaftTypedObjectRepository<T1, T2, T3>
  */
 abstract class AbstractDaftTypedObjectRepository extends AbstractObjectRepository implements DaftTypedObjectRepository
 {
+	/**
+	 * @param T3 $options
+	 */
 	public function __construct(array $options)
 	{
 		parent::__construct($options);

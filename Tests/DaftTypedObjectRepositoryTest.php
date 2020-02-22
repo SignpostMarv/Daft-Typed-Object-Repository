@@ -10,7 +10,7 @@ use Exception;
 use PHPUnit\Framework\TestCase as Base;
 use function random_bytes;
 use RuntimeException;
-use SignpostMarv\DaftRelaxedObjectRepository\ConvertingRepository;
+use DaftFramework\RelaxedObjectRepository\ConvertingRepository;
 
 /**
  * @template S as array{id:int, name:string}

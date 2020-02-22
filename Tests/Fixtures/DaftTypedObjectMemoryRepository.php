@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace SignpostMarv\DaftTypedObject\Fixtures;
 
 use RuntimeException;
-use SignpostMarv\DaftRelaxedObjectRepository\ConvertingRepository;
+use DaftFramework\RelaxedObjectRepository\ConvertingRepository;
 use SignpostMarv\DaftTypedObject\AbstractDaftTypedObjectRepository;
 use SignpostMarv\DaftTypedObject\AppendableTypedObjectRepository;
 use SignpostMarv\DaftTypedObject\DaftTypedObjectForRepository;
@@ -19,11 +19,12 @@ use Throwable;
  * @template T2 as array{id:int}
  * @template S1 as array{name:string}
  * @template S2 as array{id:int, name:string}
+ * @template T3 as array{type:class-string<DaftTypedObjectForRepository>}
  *
- * @template-extends AbstractDaftTypedObjectRepository<T1, T2>
+ * @template-extends AbstractDaftTypedObjectRepository<T1, T2, T3>
  *
  * @template-implements AppendableTypedObjectRepository<T1, T2, S1>
- * @template-implements ConvertingRepository<T1, S2, T2>
+ * @template-implements ConvertingRepository<T1, S2, T2, T3>
  * @template-implements PatchableObjectRepository<T1, T2, S1>
  */
 class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository implements
