@@ -6,11 +6,11 @@ declare(strict_types=1);
 
 namespace SignpostMarv\DaftTypedObject;
 
+use DaftFramework\RelaxedObjectRepository\ConvertingRepository;
 use Exception;
 use PHPUnit\Framework\TestCase as Base;
 use function random_bytes;
 use RuntimeException;
-use DaftFramework\RelaxedObjectRepository\ConvertingRepository;
 
 /**
  * @template S as array{id:int, name:string}

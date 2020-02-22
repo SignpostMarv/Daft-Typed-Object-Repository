@@ -6,8 +6,8 @@ declare(strict_types=1);
 
 namespace SignpostMarv\DaftTypedObject\Fixtures;
 
-use RuntimeException;
 use DaftFramework\RelaxedObjectRepository\ConvertingRepository;
+use RuntimeException;
 use SignpostMarv\DaftTypedObject\AbstractDaftTypedObjectRepository;
 use SignpostMarv\DaftTypedObject\AppendableTypedObjectRepository;
 use SignpostMarv\DaftTypedObject\DaftTypedObjectForRepository;
