@@ -15,17 +15,17 @@ use SignpostMarv\DaftTypedObject\PatchableObjectRepository;
 use Throwable;
 
 /**
- * @template T1 as MutableForRepository
- * @template T2 as array{id:int}
- * @template S1 as array{name:string}
- * @template S2 as array{id:int, name:string}
- * @template T3 as array{type:class-string<DaftTypedObjectForRepository>}
+ * @psalm-type T1 = MutableForRepository
+ * @psalm-type T2 = array{id:int}
+ * @psalm-type S1 = array{name:string}
+ * @psalm-type S2 = array{id:int, name:string}
+ * @psalm-type T3 = array{type:class-string<MutableForRepository>}
  *
  * @template-extends AbstractDaftTypedObjectRepository<T1, T2, T3>
  *
- * @template-implements AppendableTypedObjectRepository<T1, T2, S1>
+ * @template-implements AppendableTypedObjectRepository<T1, T2, S1, T3>
  * @template-implements ConvertingRepository<T1, S2, T2, T3>
- * @template-implements PatchableObjectRepository<T1, T2, S1>
+ * @template-implements PatchableObjectRepository<T1, T2, S1, T3>
  */
 class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository implements
 		AppendableTypedObjectRepository,
@@ -67,7 +67,6 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 	) : DaftTypedObjectForRepository {
 		$new_id = max(self::MIN_BASE_ID, count($this->data)) + self::INCREMENT_NEW_ID_BY;
 
-		/** @var S2 */
 		$data = [
 			'id' => $new_id,
 			'name' => $data['name'],
@@ -90,9 +89,6 @@ class DaftTypedObjectMemoryRepository extends AbstractDaftTypedObjectRepository 
 	public function UpdateTypedObject(
 		DaftTypedObjectForRepository $object
 	) : void {
-		/**
-		 * @var T2
-		 */
 		$id = $object->ObtainId();
 
 		$hash = static::RelaxedObjectHash($id);

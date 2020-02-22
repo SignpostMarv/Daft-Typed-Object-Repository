@@ -10,8 +10,9 @@ namespace SignpostMarv\DaftTypedObject;
  * @template T1 as DaftTypedObjectForRepository
  * @template T2 as array<string, scalar>
  * @template T3 as array<string, scalar|null>
+ * @template T4 as array{type:class-string<DaftTypedObjectForRepository>}
  *
- * @template-extends DaftTypedObjectRepository<T1, T2>
+ * @template-extends DaftTypedObjectRepository<T1, T2, T4>
  */
 interface PatchableObjectRepository extends DaftTypedObjectRepository
 {

@@ -45,6 +45,8 @@ interface DaftTypedObjectRepository
 
 	/**
 	 * @param T2 $id
+	 *
+	 * @return T1
 	 */
 	public function RecallTypedObject(
 		array $id,
@@ -53,6 +55,8 @@ interface DaftTypedObjectRepository
 
 	/**
 	 * @param T2 $id
+	 *
+	 * @return T1|null
 	 */
 	public function MaybeRecallTypedObject(
 		array $id
