@@ -6,11 +6,6 @@ declare(strict_types=1);
 
 namespace SignpostMarv\DaftTypedObject;
 
-use Exception;
-use PHPUnit\Framework\TestCase as Base;
-use function random_bytes;
-use RuntimeException;
-
 /**
  * @template S as array{id:int, name:string}
  * @template S2 as array{id:int|string, name:string}
