@@ -240,9 +240,9 @@ abstract class DaftTypedObjectRepositoryTest extends Base
 	 *	array{
 	 *		0:class-string<T2&PatchableObjectRepository>,
 	 *		1:array{type:class-string<T1>},
-	 *		2:array<string, scalar|null>,
+	 *		2:S,
 	 *		3:S3,
-	 *		4:array<string, scalar|null>
+	 *		4:S2
 	 *	}
 	 * >
 	 */
@@ -257,9 +257,9 @@ abstract class DaftTypedObjectRepositoryTest extends Base
 	 *
 	 * @param class-string<T2&PatchableObjectRepository> $repo_type
 	 * @param array{type:class-string<T1>} $repo_args
-	 * @param array<string, scalar|null> $append_this
+	 * @param S $append_this
 	 * @param S3 $patch_this
-	 * @param array<string, scalar|null> $expect_this
+	 * @param S2 $expect_this
 	 */
 	public function test_patch_object(
 		string $repo_type,
