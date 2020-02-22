@@ -12,14 +12,14 @@ use function random_bytes;
 use RuntimeException;
 
 /**
- * @template S as array{id:int, name:string}
- * @template S2 as array{id:int|string, name:string}
- * @template S3 as array{name:string}
+ * @template S as array<string, scalar|null>
+ * @template S2 as array<string, scalar|null>
+ * @template S3 as array<string, scalar|null>
  * @template T as array<string, scalar|array|object|null>
- * @template T1 as Fixtures\MutableForRepository
- * @template T2 as Fixtures\DaftTypedObjectMemoryRepository
+ * @template T1 as DaftTypedObjectForRepository
+ * @template T2 as AppendableTypedObjectRepository
  */
-class DaftTypedObjectRepositoryTest extends Base
+abstract class DaftTypedObjectRepositoryTest extends Base
 {
 	/**
 	 * @return list<
@@ -31,39 +31,7 @@ class DaftTypedObjectRepositoryTest extends Base
 	 *	}
 	 * >
 	 */
-	public function dataProviderAppendTypedObject() : array
-	{
-		/**
-		 * @var list<
-		 *	array{
-		 *		0:class-string<T2>,
-		 *		1:array{type:class-string<T1>},
-		 *		2:list<S>,
-		 *		3:list<S2>
-		 *	}
-		 * >
-		 */
-		return [
-			[
-				Fixtures\DaftTypedObjectMemoryRepository::class,
-				[
-					'type' => Fixtures\MutableForRepository::class,
-				],
-				[
-					[
-						'id' => 0,
-						'name' => 'foo',
-					],
-				],
-				[
-					[
-						'id' => '1',
-						'name' => 'foo',
-					],
-				],
-			],
-		];
-	}
+	abstract public function dataProviderAppendTypedObject() : array;
 
 	/**
 	 * @template K as key-of<S>
@@ -123,6 +91,9 @@ class DaftTypedObjectRepositoryTest extends Base
 			static::assertNotSame($object, $fresh1);
 			static::assertNotSame($object, $fresh2);
 			static::assertSame($fresh1, $fresh2);
+
+			/** @var T1 */
+			$fresh2 = $fresh2;
 
 			static::assertSame($expect_these[$i], $object->jsonSerialize());
 			static::assertSame($expect_these[$i], $fresh1->jsonSerialize());
@@ -267,7 +238,7 @@ class DaftTypedObjectRepositoryTest extends Base
 	/**
 	 * @return list<
 	 *	array{
-	 *		0:class-string<T2>,
+	 *		0:class-string<T2&PatchableObjectRepository>,
 	 *		1:array{type:class-string<T1>},
 	 *		2:array<string, scalar|null>,
 	 *		3:S3,
@@ -275,39 +246,7 @@ class DaftTypedObjectRepositoryTest extends Base
 	 *	}
 	 * >
 	 */
-	public function dataProviderPatchObject() : array
-	{
-		/**
-		 * @var list<
-		 *	array{
-		 *		0:class-string<T2>,
-		 *		1:array{type:class-string<T1>},
-		 *		2:array<string, scalar|null>,
-		 *		3:S3,
-		 *		4:array<string, scalar|null>
-		 *	}
-		 * >
-		 */
-		return [
-			[
-				Fixtures\DaftTypedObjectMemoryRepository::class,
-				[
-					'type' => Fixtures\MutableForRepository::class,
-				],
-				[
-					'id' => 0,
-					'name' => 'foo',
-				],
-				[
-					'name' => 'bar',
-				],
-				[
-					'id' => '1',
-					'name' => 'bar',
-				],
-			],
-		];
-	}
+	abstract public function dataProviderPatchObject() : array;
 
 	/**
 	 * @template K as key-of<S>
@@ -316,7 +255,7 @@ class DaftTypedObjectRepositoryTest extends Base
 	 *
 	 * @depends test_append_typed_object
 	 *
-	 * @param class-string<T2> $repo_type
+	 * @param class-string<T2&PatchableObjectRepository> $repo_type
 	 * @param array{type:class-string<T1>} $repo_args
 	 * @param array<string, scalar|null> $append_this
 	 * @param S3 $patch_this
@@ -329,6 +268,7 @@ class DaftTypedObjectRepositoryTest extends Base
 		array $patch_this,
 		array $expect_this
 	) : void {
+		/** @var T2&PatchableObjectRepository */
 		$repo = new $repo_type(
 			$repo_args
 		);
@@ -339,25 +279,13 @@ class DaftTypedObjectRepositoryTest extends Base
 
 		$fresh = $repo->AppendTypedObject($object);
 
-		$id = $repo->ObtainIdFromObject($fresh);
+		$id = $fresh->ObtainId();
 
 		$repo->PatchTypedObjectData($id, $patch_this);
 
 		static::assertSame(
 			$expect_this,
-			$repo->RecallTypedObject($repo->ObtainIdFromObject($fresh))->__toArray()
+			$repo->RecallTypedObject($fresh->ObtainId())->__toArray()
 		);
-
-		$fresh->name = strrev($fresh->name);
-
-		$repo->UpdateTypedObject($fresh);
-
-		$repo->ForgetTypedObject($repo->ObtainIdFromObject($fresh));
-
-		$fresh2 = $repo->RecallTypedObject($repo->ObtainIdFromObject($fresh));
-
-		static::assertNotSame($fresh, $fresh2);
-
-		static::assertSame(strrev($object->name), $fresh2->name);
 	}
 }
